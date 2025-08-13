@@ -1,0 +1,69 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Rayfield/main/source.lua"))()
+
+local Rayfield = require(game:GetService("CoreGui"):WaitForChild("Rayfield"))
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local Window = Rayfield:CreateWindow({
+    Name = "🧊 Cube Hub Lite",
+    LoadingTitle = "Injecting Chaos...",
+    LoadingSubtitle = "Made for Tadej 😈",
+    ConfigurationSaving = { Enabled = false },
+    Discord = { Enabled = false },
+    KeySystem = false
+})
+
+-- 🛸 Fly Toggle
+Window:CreateToggle({
+    Name = "Enable Fly",
+    CurrentValue = false,
+    Callback = function(Value)
+        if Value then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+        end
+    end
+})
+
+-- 👁️ ESP Toggle
+Window:CreateToggle({
+    Name = "Enable ESP",
+    CurrentValue = false,
+    Callback = function(Value)
+        if Value then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ArcherDevelopment/RobloxESP/main/ESP.lua"))()
+        end
+    end
+})
+
+-- 🌀 Utility Tab
+local UtilityTab = Window:CreateTab("Utility", 4483362458)
+
+UtilityTab:CreateButton({
+    Name = "Teleport to Nearest Player",
+    Callback = function()
+        local closest = nil
+        local shortest = math.huge
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local dist = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                if dist < shortest then
+                    shortest = dist
+                    closest = player
+                end
+            end
+        end
+        if closest then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = closest.Character.HumanoidRootPart.CFrame + Vector3.new(2, 0, 0)
+        end
+    end
+})
+
+UtilityTab:CreateButton({
+    Name = "Orbit Spin Nearest Player",
+    Callback = function()
+        local RunService = game:GetService("RunService")
+        local angle = 0
+        local radius = 5
+        local spinning = true
+
+        local function getNearest()
